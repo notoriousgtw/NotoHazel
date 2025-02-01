@@ -10,6 +10,12 @@ workspace "Hazel"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+-- Include directories relative to root folder (solution directory)
+IncludeDir = {}
+IncludeDir["GLFW"] = "Hazel/vendor/GLFW/include"
+
+include "Hazel/vendor/GLFW"
+
 project "Hazel"
     location "Hazel"
     kind "SharedLib"
@@ -17,23 +23,38 @@ project "Hazel"
 
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+    pchheader "hzpch.h"
+    pchsource "Hazel/src/hzpch.cpp"
     
     files
     {
         "%{prj.name}/src/**.h",
-        "%{prj.name}/src/**.cpp"
+        "%{prj.name}/src/**.cpp",
+        "%{prj.name}/src/Events/**.h",
+        "%{prj.name}/src/Events/**.cpp",
+        "%{prj.name}/Platform/Windows/**.h",
+        "%{prj.name}/Platform/Windows/**.cpp"
     }
 
     includedirs
     {
-        "%{prj.name}/vender/spdlog/include"
+        "%{prj.name}/src",
+        "%{prj.name}/vendor/spdlog/include",
+        "%{IncludeDir.GLFW}"
+    }
+
+    links
+    {
+        "GLFW",
+        "opengl32.lib"
     }
 
     filter "system:windows"
         cppdialect "C++17"
         staticruntime "On"
         systemversion "latest"
-        buildoptions "/utf-8"
+        buildoptions "/utf-8 /MT"
 
         defines
         {
@@ -74,7 +95,7 @@ project "Sandbox"
 
     includedirs
     {
-        "Hazel/vender/spdlog/include",
+        "Hazel/vendor/spdlog/include",
         "Hazel/src"
     }
 
@@ -87,7 +108,7 @@ project "Sandbox"
         cppdialect "C++17"
         staticruntime "On"
         systemversion "latest"
-        buildoptions "/utf-8"
+        buildoptions "/utf-8 /MT"
 
         defines
         {

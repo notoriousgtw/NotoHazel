@@ -1,5 +1,5 @@
 [submodule "Hazel/vender/spdlog"]
-	path = Hazel/vender/spdlog
+	path = Hazel/vendor/spdlog
 	url = https://github.com/gabime/spdlog
 [submodule "NotoGLFW"]
 	path = Hazel/vendor/GLFW
